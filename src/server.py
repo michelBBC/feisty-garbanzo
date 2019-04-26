@@ -3,7 +3,7 @@ from flask.wrappers import Response
 
 import json
 
-from utils import *
+from .utils import *
 
 json_headers = {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'}
 
@@ -35,7 +35,7 @@ def search_items():
         mixin = request.args.get("mixin")
         max_hits = request.args.get("max")
     if not query: 
-        return Response("Empty query", 200)
+        return Response("Empty query", 204)
     spell_check = False
     if spell_check:
         query = " ".join(w for w in check_spelling(query))
@@ -56,6 +56,8 @@ def correct_items():
     else:
         # Get request
         query = request.args.get('q') or request.args.get('query')
+    if not query: 
+        return Response("Empty input", 204)
     corrected = [w for w in check_spelling(query)]
     return Response(json.dumps(corrected), 200, headers=json_headers)
 
