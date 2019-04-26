@@ -1,6 +1,8 @@
-from flask import Flask 
+from flask import Flask
+from .server import app
 
 def create_app():
-    app = Flask(__name__)
+    # app = Flask(__name__)
+    application = app
 
-    return app
+    return application
