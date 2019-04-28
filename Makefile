@@ -1,26 +1,17 @@
 SRCPATH="src"
 
-.PHONY: clean
-clean: check-env
-	cd $(SRCPATH) \
-		&& rm -rf build package.zip
+.PHONY: install
+install:
+	pipenv install --all
 
 .PHONY: test
-test: check-env
-		pipenv install \
-        && pipenv run python -m unittest discover -s src/
+test:
+	pipenv install \
+	&& pipenv run python -m unittest discover -s src/ \
+	&& pipenv uninstall --dev
 
-.PHONY: check-env
-check-env:
-	ifndef SRCPATH
-		$(error SRCPATH is undefined)
-	endif
-		@if [ ! -d $(SRCPATH) ]; then \
-			echo $(SRCPATH) does not exist; \
-			exit 1; \
-	fi
 .PHONY: run-local
 run-local:
 	set -o allexport \
-	&& python $(SRCPATH)/server.py \
+	&& FLASK_APP='src:create_app()' FLASK_ENV=development pipenv run flask run \
 	&& set +o allexport 
