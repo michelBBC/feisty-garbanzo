@@ -45,10 +45,10 @@ POST
     Expects `Content-Type: application/json` request header.
 ```json
 {
-    'query': <term>,
+    'query': '<term>',
     'mixin': 'images',
-    'max': <integer>,
-    suggestions: <true|false>
+    'max': '<integer>',
+    suggestions: '<true|false>'
 }
 ```
 Optional parameters are identical to the GET request, ie. `mixin`, `max`, and `suggestions` are _optional_.
