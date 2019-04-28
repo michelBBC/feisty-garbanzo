@@ -35,8 +35,8 @@ Get spelling suggestions for a word/product in the database.
 
 GET  
     Parameters:  
-    - `query=<term>` The term to be searched for, eg. 'Fish' 
-    - `products=<true|false>` _optional_ include list of products in response
+    - `query=<term>` The term to be searched for, eg. 'Fish'  
+    - `products=<true|false>` _optional_ include list of products in response  
     - `mixin=<images>` _optional_ return urls of images in results  
     - `max=<integer>` _optional_ maximum number of results to be returned
 
