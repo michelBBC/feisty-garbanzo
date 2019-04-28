@@ -103,7 +103,7 @@
                 {% endfor %}
             </ul>
             <p class="docstring">{% autoescape false %}{{doc.docstring|urlize|nl2br}}{% endautoescape %}</p>
-            {% if 'search' in doc.rule %}
+            {% if 'suggestions' in doc.rule %}
             <ul class="arguments">               
                 <ul>
                 <ul><li><i>query</i>: &lt;string&gt; search term</li></ul>
@@ -113,7 +113,7 @@
                 </ul>
             </ul>
             <ul class="response"> 
-                Sample response: <a href="/search?q=Amazon&mixin=image&products=true"> JSON </a>
+                Sample response: <a href="/suggestions?q=Amazn&mixin=image&products=true"> JSON </a>
             </ul>
             {% endif %}
         </div>

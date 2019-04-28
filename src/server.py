@@ -33,7 +33,7 @@ def hello():
 @auto.doc()
 def suggest_items():
     """
-    Search for products by name.
+    Get spelling suggestions for a given search term.
     """
     if request.method == "POST":
         # Post request
