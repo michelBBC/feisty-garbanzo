@@ -3,35 +3,47 @@ from unittest.mock import patch
 
 
 from utils import (
-    correct_spelling,
-    check_spelling,
+    spelling_suggestions,
+    check_spelling_local,
     search_term,
-    get_suggestions
+    levenshtein,
+    get_word_match
 )
 
 
 class UtilsTestCase(unittest.TestCase):
 
-    def test_correct_spelling(self):
-        self.assertEqual(
-            correct_spelling("Cheeze"), 'cheese')
+    def test_levenshtein(self):
+        word1 = "kitten"
+        word2 = "kitchen"
+        self.assertEqual(levenshtein(word1, word2), 2)
 
-    def test_check_spelling(self):
-        word = "natural"
-        self.assertEqual(check_spelling(word), "natural")
 
-    # @patch('utils.s3_event_is_removal')
-    # def test_search_term(self, test_s3_event_is_removal):
-        # test_s3_event_is_removal.return_value = False
-        # self.assertTrue(s3_event_is_publish({"eventName": "ObjectCreated:Put"}))
-        # self.assertFalse(s3_event_is_publish({"eventName": "ObjectRemoved:Delete"}))
+    def test_check_spelling_local(self):
+        word = "Cheeze"
+        self.assertEqual(check_spelling_local(word), ["cheese"])
 
-        # test_s3_event_is_removal.return_value = True
-        # self.assertFalse(s3_event_is_publish({"eventName": "ObjectCreated:Put"}))
-
-    def test_get_suggestions(self):
+    def test_spelling_suggestions(self):
         word = "Amazn"
-        suggestions = ["amazon", "amaze"]
+        input_list = [
+            {
+                "name": "Amazon - Fire TV Stick",
+                "image": "https://cdn-demo.algolia.com/bestbuy/9999119_sb.jpg",
+                "nbTypos": 1,
+                "nbExactWords": 2
+            }
+        ]
+        suggestions = ["Amazon"]
         self.assertEqual(
-            get_suggestions(word), suggestions
+            spelling_suggestions(word, input_list), suggestions
         )
+
+
+    def test_get_word_match(self):
+        match_target = "Amazon - Fire TV Stick"
+
+        query = "Amazn"
+        self.assertEqual(get_word_match(query, match_target)[0], "Amazon")
+
+        query = 'Amazn styck'
+        self.assertEqual(get_word_match(query, match_target)[0], "Amazon Stick")
