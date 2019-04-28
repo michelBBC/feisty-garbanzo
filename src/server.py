@@ -60,12 +60,13 @@ def suggest_items():
     # Do spelling check
     # suggestions = []
     suggestions = spelling_suggestions(query, search_response, best_guess=False)
+    spelling_correct = len(suggestions)==0
 
     # Format response
     if include_products:
-        response = {'results': search_response, 'spelling_suggestions': suggestions, 'spelling_correct': len(suggestions)==0}
+        response = {'results': search_response, 'spelling_suggestions': suggestions, 'spelling_correct': spelling_correct}
     else:
-        response = {'spelling_suggestions': suggestions}
+        response = {'spelling_suggestions': suggestions, 'spelling_correct': spelling_correct}
 
     response['metadata'] = {'request': request.url, 'version': api_version}
     return Response(json.dumps(response), 200, headers=json_headers)
