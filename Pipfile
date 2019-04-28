@@ -46,6 +46,7 @@ Pygments = "==2.3.1"
 Werkzeug = "==0.15.2"
 python-dotenv = "*"
 pyspellchecker = "*"
+flask-selfdoc = "*"
 
 [requires]
 python_version = "3.6"

@@ -1,0 +1,122 @@
+<html>
+    <head>
+        <title>
+            {% if title is defined -%}
+                {{title}}
+            {% else -%}
+                Documentation
+            {% endif -%}
+        </title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+            }
+
+            body {
+                margin: 10px;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+                "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+                sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+  
+            code {
+                font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+                monospace;
+            }
+  
+
+            div.mapping {
+                margin: 20px 20px;
+            }
+
+            .location { font-style: italic; }
+
+            ul.methods {
+                padding-top: 5px;
+            }
+
+            ul.methods:before { 
+                font-weight: bold;
+                content: "Methods: ";
+            }
+            ul.methods li {
+                display: inline;
+                list-style: none;
+            }
+            ul.methods li:after { content: ","; }
+            ul.methods li:last-child:after { content: ""; }
+
+
+            ul.arguments:before { font-weight: bold; content: "Arguments: "; }
+            ul.arguments li {
+                display: inline;
+                list-style: none;
+                padding-left: 20px;
+            }
+            ul.arguments .argument { font-style:italic }
+            ul.arguments .default:not(:empty):before { content: "("; }
+            ul.arguments .default:not(:empty):after { content: ")"; }
+            ul.arguments li:after { font-weight: bold; content: ","; }
+            ul.arguments li:last-child:after { content: ""; }
+
+            ul.property li {
+                display: inline;
+                list-style: none;
+                padding-left: 20px;
+            }
+
+            ul.response {
+                font-weight: bold;
+            }
+            ul.response a {
+                font-weight: initial;
+            }
+
+            .docstring:before { font-weight: bold; content: "Purpose: "; }
+        </style>
+    </head>
+    <body>
+        <h1>
+            {% if title is defined -%}
+                {{title}}
+            {% else -%}
+                Documentation
+            {% endif -%}
+        </h1>
+
+        {% for doc in autodoc %}
+        <div class="mapping">
+            <a id="rule-{{doc.rule|urlencode}}" class="rule"><h2>{{doc.rule|escape}}</h2></a>
+            <ul class="methods">
+                {% for method in doc.methods -%}
+                <li class="method">{{method}}</li>
+                {% endfor %}
+            </ul>
+            <ul class="property">
+                {% for prop in doc if prop not in defaults %}
+                <li class="property">{{prop}}:{{doc[prop]}}</br></li>
+                {% endfor %}
+            </ul>
+            <p class="docstring">{% autoescape false %}{{doc.docstring|urlize|nl2br}}{% endautoescape %}</p>
+            {% if 'search' in doc.rule %}
+            <ul class="arguments">               
+                <ul>
+                <ul><li><i>query</i>: string search term</li></ul>
+                <ul><li><i>mixin</i>: string (image) append urls of images to search results [optional]</li></ul>
+                <ul><li><i>max</i>: integer maximum number of results [optional]</li></ul>
+                <ul><li><i>suggestions</i>: string (true|false) add spelling suggestions in response [optional]</li></ul>
+                </ul>
+            </ul>
+            <ul class="response"> 
+                Sample response: <a href="/search?q=Amazon&mixin=image&suggestions=true"> JSON </a>
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </body>
+</html>
