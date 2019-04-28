@@ -7,12 +7,11 @@ search_key = os.getenv("search_key")
 account_id = os.getenv("account_id")
 algolia_index = os.getenv("algolia_index")
 
+from spellchecker import SpellChecker
+spell = SpellChecker()
+
 client = SearchClient.create(account_id, search_key)
 index = client.init_index(algolia_index)
-
-from spellchecker import SpellChecker
-
-spell = SpellChecker()
 
 MAX_HITS = 150
 
@@ -112,32 +111,36 @@ def spelling_suggestions(input_str, input_list, best_guess=False):
             if item['nbExactWords'] != len(input_str.split()) and item['nbTypos'] > 0:
                 suggestions.append(get_word_match(input_str, item['name']))
 
-    # Sort list by ascending distance (most similar first)
-    suggestions.sort(key=lambda x: x[1])
     # Remove empty strings
     suggestions = list(filter(lambda x: x[1]!=0, suggestions))
-
+    # Sort list by ascending distance (most similar first)
+    suggestions = sorted(suggestions, key=lambda x: x[1])
+    
     if best_guess and len(suggestions)>0:
         # Get closest guess
-        return [suggestion[0][0]]
+        return [suggestions[0][0]]
     else:
-        # Return list of `likely` options
-        return list(set([suggestion[0] for suggestion in suggestions]))
+        # Return list of unique `likely` options
+        unique_suggestions = []
+        for suggestion in suggestions:
+            if suggestion[0] not in unique_suggestions: unique_suggestions.append(suggestion[0])
+        return unique_suggestions
 
 
-def search_term(input_str, max_hits=100, mixin=None, check_spelling=False):
+def search_term(input_str, max_hits=100, mixin=None):
     # Prevent from asking too many results
     max_hits = max(max_hits, MAX_HITS)
     response = index.search(input_str, {"hitsPerPage": max_hits, "page":0, 'getRankingInfo': True})
     hits = response.get("hits")
-    if not hits: return []
-
-    return [
-        {
-            'name': hit['name'],
-            mixin: hit.get(mixin),
-            'nbTypos': hit.get('_rankingInfo').get('nbTypos'),
-            'nbExactWords': hit.get('_rankingInfo').get('nbExactWords')
-        }
-        for hit in hits if 'name' in hit and mixin in hit]
+    if not hits:
+        return []
+    else:
+        return [
+            {
+                'name': hit['name'],
+                mixin: hit.get(mixin),
+                'nbTypos': hit.get('_rankingInfo').get('nbTypos'),
+                'nbExactWords': hit.get('_rankingInfo').get('nbExactWords')
+            }
+            for hit in hits if 'name' in hit and mixin in hit]
 
