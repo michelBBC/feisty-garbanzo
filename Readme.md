@@ -22,15 +22,15 @@ For deployment on a cloud platform as a service, such as [Heroku](www.heroku.com
 
 ## Available Endpoints
 
-`/`  
-GET  
-Display short documentation ofavailable API endpoints.
+`/`  [GET]  
+Display short documentation ofavailable API endpoints.  
 
-`/ping`  
-GET  
-Basic alive/ping endpoint.
 
-`/search`  
+`/ping` [GET]  
+Basic alive/ping endpoint.  
+
+
+`/search` [GET, POST]  
 Search for a word/product in the database.
 
 GET  
