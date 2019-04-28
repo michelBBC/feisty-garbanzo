@@ -30,25 +30,24 @@ Display short documentation ofavailable API endpoints.
 Basic alive/ping endpoint.  
 
 
-`/search` [GET, POST]  
-Search for a word/product in the database.
+`/suggestions` [GET, POST]  
+Get spelling suggestions for a word/product in the database.
 
 GET  
     Parameters:  
-    - `query=<term>` The term to be searched for, eg. 'Fish'  
+    - `query=<term>` The term to be searched for, eg. 'Fish' 
+    - `products=<true|false>` _optional_ include list of products in response
     - `mixin=<images>` _optional_ return urls of images in results  
     - `max=<integer>` _optional_ maximum number of results to be returned
-    - `suggestions=<true|false>` _optional_ include spelling suggestions in the response  
-
 
 POST  
     Expects `Content-Type: application/json` request header.
 ```
 {
     'query': <term>,
+    'products': <true|false>,
     'mixin': 'images',
-    'max': <integer>,
-    suggestions: <true|false>
+    'max': <integer>
 }
 ```
 Optional parameters are identical to the GET request, ie. `mixin`, `max`, and `suggestions` are _optional_.
@@ -67,6 +66,7 @@ Sample response:
       "https://cdn-demo.algolia.com/bestbuy/9440019_sb.jpg"
     ]
   ],
+  "correct_spelling": false,
   "spelling_suggestions": [
     "Amazon"
   ],

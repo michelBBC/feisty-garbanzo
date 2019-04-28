@@ -29,9 +29,9 @@ def hello():
     return Response("Hello", 200)
 
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/suggestions", methods=["GET", "POST"])
 @auto.doc()
-def search_items():
+def suggest_items():
     """
     Search for products by name.
     """
@@ -49,26 +49,23 @@ def search_items():
     query = payload.get("query") or payload.get("q")
     mixin = payload.get("mixin")
     max_hits = payload.get("max")
-    print(bool(payload.get("suggestions")))
-    spell_check = payload.get("suggestions") == 'true' if "suggestions" in payload else False
+    include_products = payload.get("products") == 'true' if "products" in payload else False
     if not query: 
         return Response("Empty query", 204)
-
-
-    # Do spelling check
-    if spell_check:
-        query = " ".join(w for w in check_spelling(query))
-        corrected = [w for w in check_spelling(query)]
 
     # Get search results
     max_h = max_hits or 10
     search_response = search_term(query, max_hits=max_h, mixin=mixin)
 
+    # Do spelling check
+    # suggestions = []
+    suggestions = spelling_suggestions(query, search_response, best_guess=False)
+
     # Format response
-    if spell_check:
-        response = {'results': search_response, 'spelling_suggestions': corrected}
+    if include_products:
+        response = {'results': search_response, 'spelling_suggestions': suggestions, 'spelling_correct': len(suggestions)==0}
     else:
-        response = {'results': search_response}
+        response = {'spelling_suggestions': suggestions}
 
     response['metadata'] = {'request': request.url, 'version': api_version}
     return Response(json.dumps(response), 200, headers=json_headers)
